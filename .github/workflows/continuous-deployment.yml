@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      actions: read
-      contents: read
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.1.0
@@ -23,7 +21,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v5
         with:
-          name: frontend-build-${{ github.event.workflow_run.head_sha }}
+          name: ${{ github.event.workflow_run.head_sha }}
           path: ./dist
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
