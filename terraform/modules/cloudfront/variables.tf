@@ -117,3 +117,39 @@ variable "tags" {
   default     = {}
 }
 
+variable "continuous_deployment_policy_id" {
+  description = "ID of the continuous deployment policy (for blue-green deployments)"
+  type        = string
+  default     = null
+}
+
+variable "wait_for_deployment" {
+  description = "Whether to wait for the distribution to be deployed"
+  type        = bool
+  default     = true
+}
+
+variable "staging_distribution_domain_name" {
+  description = "Domain name of the staging distribution (for continuous deployment)"
+  type        = string
+  default     = null
+}
+
+variable "enable_staging_distribution" {
+  description = "Enable staging distribution for continuous deployment"
+  type        = bool
+  default     = false
+}
+
+variable "staging_s3_bucket_regional_domain_name" {
+  description = "Regional domain name of the staging S3 bucket"
+  type        = string
+  default     = null
+}
+
+variable "staging_origin_access_control_id" {
+  description = "OAC ID for staging bucket"
+  type        = string
+  default     = null
+}
+
