@@ -1,0 +1,35 @@
+name: Continuous Deployment
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+
+jobs:
+  staging-deployment:
+    name: staging-deployment
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: frontend-build-${{ github.event.workflow_run.head_sha }}
+          path: ./dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Deploy to S3 Staging
+        run: aws s3 sync ./dist s3://gabrielstudying.click-site-prd-staging --delete
+
+      - name: Invalidate CloudFront Staging Cache
+        run: |
+          STAGING_DIST_ID=${{ secrets.CLOUDFRONT_STAGING_DIST_ID }}
+          aws cloudfront create-invalidation --distribution-id $STAGING_DIST_ID --paths "/*"
