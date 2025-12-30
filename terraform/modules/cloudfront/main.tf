@@ -1,7 +1,3 @@
-locals {
-  s3_origin_id = var.s3_bucket_regional_domain_name
-}
-
 resource "aws_cloudfront_distribution" "this" {
   enabled             = var.enabled
   default_root_object = var.default_root_object
@@ -9,6 +5,7 @@ resource "aws_cloudfront_distribution" "this" {
   aliases             = var.aliases
   comment             = var.comment
   is_ipv6_enabled     = var.is_ipv6_enabled
+  wait_for_deployment = var.wait_for_deployment
 
   origin {
     domain_name              = var.s3_bucket_regional_domain_name
